@@ -1,1 +1,5 @@
-Answers to the text questions go here.
+(d) When is the Flesch Kincaid score *not* a valid, robust or reliable estimator of text difficulty? Give two conditions. (Text answer, 200 words maximum).
+- When the text contains terminology that is not familiar to the reader for example,
+medical text might be filled with terms not easily understood by someone without medical knowledge.
+- When the text has a short sentence structure, the score might not consider the complexity
+of the sentence.
