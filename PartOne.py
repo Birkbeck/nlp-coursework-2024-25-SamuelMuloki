@@ -185,7 +185,7 @@ def subjects_by_verb_count(doc, verb):
                     subjects.append(child.text)
 
     subject_counts = Counter(subjects)
-    return subject_counts.most_common()
+    return subject_counts.most_common(10)
 
 
 
