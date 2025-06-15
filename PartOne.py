@@ -159,9 +159,12 @@ def subjects_by_verb_count(doc, verb):
 
 def adjective_counts(doc):
     """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
-    pass
-
-
+    adjectives = []
+    for token in doc:
+        if token.pos_ == 'ADJ':
+            adjectives.append(token.text)
+    adjective_counts = Counter(adjectives)
+    return adjective_counts.most_common(10)
 
 if __name__ == "__main__":
     """
@@ -177,7 +180,11 @@ if __name__ == "__main__":
     print(get_ttrs(df))
     print(get_fks(df))
     df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
-    # print(adjective_counts(df))
+    for i, row in df.iterrows():
+        print(row["title"])
+        print(adjective_counts(row["parsed"]))
+        print("\n")
+
     for i, row in df.iterrows():
         print(row["title"])
         print(subjects_by_verb_count(row["parsed"], "hear"))
