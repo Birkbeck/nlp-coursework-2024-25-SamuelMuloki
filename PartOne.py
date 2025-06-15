@@ -2,6 +2,7 @@
 
 # Note: The template functions here and the dataframe format for structuring your solution is a suggested but not mandatory approach. You can use a different approach if you like, as long as you clearly answer the questions and communicate your answers clearly.
 
+import math
 import nltk
 import spacy
 from pathlib import Path
@@ -29,7 +30,7 @@ def fk_level(text, d):
     words = nltk.word_tokenize(text)
     num_words = len(words)
     num_sentences = len(sentences)
-    num_syllables = sum(count_syl(word, d) for word in words)
+    num_syllables = sum(count_subjectsyl(word, d) for word in words)
 
     if num_words == 0 or num_sentences == 0:
         return 0.0
@@ -38,7 +39,7 @@ def fk_level(text, d):
     # 0.39 * (total words / total sentences) + 11.8 * (total syllables / total words) - 15.59
     return 0.39 * (num_words / num_sentences) + 11.8 * (num_syllables / num_words) - 15.59
 
-def count_syl(word, d):
+def count_subjectsyl(word, d):
     """Counts the number of syllables in a word given a dictionary of syllables per word.
     if the word is not in the dictionary, syllables are estimated by counting vowel clusters
 
@@ -139,9 +140,40 @@ def get_fks(df):
 
 def subjects_by_verb_pmi(doc, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
-    pass
+    subjects_verb_pairs = []
+    subject_counts = Counter()
+    verb_counts = Counter()
+    total_pairs = 0
+
+    for token in doc:
+        if token.pos_ == 'VERB':
+            verb_lemma = token.lemma_
+            for child in token.children:
+                if child.dep_ in ('nsubj', 'nsubjpass'):
+                    subject = child.text
+                    subjects_verb_pairs.append((subject, verb_lemma))
+                    subject_counts[subject] += 1
+                    verb_counts[verb_lemma] += 1
+                    total_pairs += 1
 
 
+    subjects_by_verb_count = Counter(
+        subject for subject, verb in subjects_verb_pairs if verb == target_verb
+    )
+
+    pmi_results = []
+    for subject, count_subjects_verbs in subjects_by_verb_count.items():
+        count_subjects = subject_counts[subject]
+        count_verbs = verb_counts[target_verb]
+        if count_subjects_verbs == 0 or count_subjects == 0 or count_verbs == 0:
+            continue
+        probability_subjects_verbs = count_subjects_verbs / total_pairs
+        probability_subjects = count_subjects / total_pairs
+        probability_verbs = count_verbs / total_pairs
+        pmi = math.log2(probability_subjects_verbs / (probability_subjects * probability_verbs))
+        pmi_results.append((subject, pmi))
+
+    return sorted(pmi_results, key=lambda x: x[1], reverse=True)[:10]
 
 def subjects_by_verb_count(doc, verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
@@ -189,10 +221,9 @@ if __name__ == "__main__":
         print(row["title"])
         print(subjects_by_verb_count(row["parsed"], "hear"))
         print("\n")
-    """ 
+
     for i, row in df.iterrows():
         print(row["title"])
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
-    """
 
