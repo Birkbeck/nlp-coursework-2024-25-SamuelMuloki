@@ -12,3 +12,5 @@ df = df[df['speech_class'] == 'Speech']
 # Remove any rows where the text in the ‘speech’ column is less than 1000
 # characters long.
 df = df[df['speech'].str.len() >= 1000]
+
+print(df.shape)
