@@ -1,5 +1,17 @@
+Part One
 (d) When is the Flesch Kincaid score *not* a valid, robust or reliable estimator of text difficulty? Give two conditions. (Text answer, 200 words maximum).
 - When the text contains terminology that is not familiar to the reader for example,
 medical text might be filled with terms not easily understood by someone without medical knowledge.
 - When the text has a short sentence structure, the score might not consider the complexity
 of the sentence.
+
+Part Two
+(e) The custom tokenizer function preprocesses and tokenizes the speech 
+text for improved classification performance and efficiency. Here is what it does
+- Lowercase the text. Converts all text to lowercase for case insensitive matching.
+- Remove punctuation except for words with hyphens and apostrrophe, to preserve words
+like "co-operating" and doesn't.
+- Remove standalone numbers
+- Tokenization. Splits the token using whitespaces.
+- Short Token Removal. Removes tokens shorter than three characters, which are often
+stopwords.
