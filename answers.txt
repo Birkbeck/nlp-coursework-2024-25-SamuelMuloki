@@ -8,10 +8,23 @@ of the sentence.
 Part Two
 (e) The custom tokenizer function preprocesses and tokenizes the speech 
 text for improved classification performance and efficiency. Here is what it does
+
+Explain tokenizer function 
 - Lowercase the text. Converts all text to lowercase for case insensitive matching.
-- Remove punctuation except for words with hyphens and apostrrophe, to preserve words
+- Remove punctuation except for words with hyphens and apostrophe, to preserve words
 like "co-operating" and doesn't.
 - Remove standalone numbers
 - Tokenization. Splits the token using whitespaces.
 - Short Token Removal. Removes tokens shorter than three characters, which are often
 stopwords.
+- Apply stemming using nltk PorterStemmer. Stemming reduces words to their root forms
+(e.g. "running" -> "run") which helps group similar words together and reduce feature sparsity.
+
+Discuss performance
+- Removing short tokens helps the TfidVectorizer focus on more meaningful features hence
+making use of the 3000 feature limit.
+- The SVM classifier macro F1 score improved with stemming from 0.647 to 0.666 (truncated to 3 decimal places)
+this implies that SVM benefited from a reduced feature space, which helped it better distingush between classes.
+- The Random forest classifier's score dropped slightly with stemming from 0.484 to 0.475, this is because 
+random forests benefit from granular features when the features provide more information about the data. 
+Stemming may remove some of these features.
