@@ -48,20 +48,21 @@ def count_syl(word, d):
     Returns:
         int: The number of syllables in the word.
     """
-    if word.lower() in d:
-        return len(d[word.lower()])
+    word = word.lower()
+    if word in d:
+        return len([ph for ph in d[word][0] if ph[-1].isdigit()]) # count vowels
     else:
         vowels = "aeiou"
         prev_char_is_vowel = False
         count = 0
-        for char in word.lower():
+        for char in word:
             if char in vowels:
                 if not prev_char_is_vowel:
                     count += 1
                 prev_char_is_vowel = True
             else:
                 prev_char_is_vowel = False
-    return count
+    return count if count > 0 else 1
     
 
 
